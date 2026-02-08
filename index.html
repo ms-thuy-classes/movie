@@ -10,7 +10,8 @@
             --deep-pink: #ffafbd;
             --accent-pink: #ff8fa3;
             --text-color: #4a4a4a;
-            --success-green: #7fd1a5;
+            --success-green: #2ecc71;
+            --error-red: #e74c3c;
         }
 
         body {
@@ -35,7 +36,7 @@
 
         .container {
             display: grid;
-            grid-template-columns: 1.3fr 0.7fr; /* Ưu tiên video rộng hơn nữa */
+            grid-template-columns: 1.2fr 0.8fr;
             gap: 20px;
             max-width: 1500px;
             margin: 0 auto;
@@ -66,7 +67,7 @@
             background: rgba(255, 255, 255, 0.9);
             padding: 25px;
             border-radius: 25px;
-            height: 85vh;
+            height: 80vh;
             overflow-y: auto;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             scroll-behavior: smooth;
@@ -77,7 +78,7 @@
             margin: 12px 0;
             border-radius: 15px;
             transition: all 0.4s ease;
-            line-height: 1.8;
+            line-height: 2;
             border-left: 6px solid transparent;
             background: rgba(255, 255, 255, 0.5);
         }
@@ -85,8 +86,13 @@
         .sentence.active {
             background: white;
             border-left: 6px solid var(--accent-pink);
-            transform: scale(1.02);
-            box-shadow: 0 5px 15px rgba(216, 67, 97, 0.1);
+            transform: scale(1.01);
+        }
+
+        .input-wrapper {
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
         }
 
         input[type="text"] {
@@ -98,22 +104,48 @@
             font-weight: bold;
             color: #d84361;
             outline: none;
-            border-radius: 4px;
             padding: 2px;
+            margin: 0 5px;
         }
 
         input.correct {
             background: var(--success-green) !important;
             color: white !important;
-            border-bottom-color: white;
+            border-bottom-color: transparent;
+        }
+
+        input.incorrect {
+            background: #ffe6e6 !important;
+            border-bottom-color: var(--error-red);
+        }
+
+        .correct-answer-label {
+            display: block;
+            font-size: 0.75em;
+            color: var(--error-red);
+            font-weight: bold;
+            margin-top: -5px;
         }
 
         .keyword-hint {
             display: block;
             font-size: 0.85em;
-            color: #d84361;
+            color: #666;
             font-style: italic;
-            margin-top: 5px;
+            margin-top: 8px;
+            border-top: 1px dashed #ffd1dc;
+        }
+
+        .score-board {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #d84361;
+            display: none;
         }
 
         .controls {
@@ -124,16 +156,17 @@
         }
 
         button {
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 12px 25px;
+            border-radius: 25px;
             border: none;
             cursor: pointer;
             font-weight: bold;
             transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        .btn-check { background: var(--accent-pink); color: white; }
-        .btn-check:hover { background: #d84361; }
+        .btn-check { background: #d84361; color: white; }
+        .btn-check:hover { background: #b7324d; transform: translateY(-2px); }
 
         @media (max-width: 1100px) {
             .container { grid-template-columns: 1fr; }
@@ -145,7 +178,7 @@
 
 <header>
     <h1>🌸 Learn English with Ms. Thúy 🌸</h1>
-    <p><b>Video:</b> Why do you want to squeeze cute things? (40 Vocabulary Gaps)</p>
+    <p>Chủ đề: <b>Cute Aggression</b> - Điền từ vào chỗ trống (40 câu)</p>
 </header>
 
 <div class="container">
@@ -153,8 +186,11 @@
         <div class="video-container">
             <div id="player"></div>
         </div>
+        
+        <div id="score-display" class="score-board"></div>
+
         <div class="controls">
-            <button class="btn-check" onclick="checkAnswers()">Kiểm tra đáp án</button>
+            <button class="btn-check" onclick="checkAnswers()">Kiểm tra đáp án & Tính điểm</button>
             <button style="background: white; color: #888;" onclick="location.reload()">Làm lại bài</button>
         </div>
     </div>
@@ -163,12 +199,10 @@
 </div>
 
 <script>
-    // Toàn bộ 40 chỗ trống (IELTS & Common words) trích xuất từ nội dung bạn cung cấp
     const transcriptData = [
         { start: 7, end: 10, text: "Watching a kitten <input type='text' data-answer='fumbling'> around,", hint: "lóng ngóng/vụng về" },
         { start: 10, end: 18, text: "it might feel as if you’ve never <input type='text' data-answer='encountered'> anything so <input type='text' data-answer='devastatingly'> adorable in your <input type='text' data-answer='mortal'> life.", hint: "bắt gặp - tột cùng - trần thế" },
-        { start: 19, end: 24, text: "You may want to pet its soft fur and kiss its tiny head." },
-        { start: 25, end: 35, text: "But you may also feel the <input type='text' data-answer='conflicting'> <input type='text' data-answer='urge'> to <input type='text' data-answer='squeeze'> or smush the kitten,", hint: "mâu thuẫn - sự thôi thúc - bóp/nặn" },
+        { start: 25, end: 35, text: "But you may also feel the <input type='text' data-answer='conflicting'> <input type='text' data-answer='urge'> to <input type='text' data-answer='squeeze'> or smush the kitten,", hint: "mâu thuẫn - sự thôi thúc - nựng/bóp" },
         { start: 36, end: 40, text: "However, you don’t. And you might be <input type='text' data-answer='appalled'> by yourself.", hint: "kinh hãi/sốc" },
         { start: 40, end: 51, text: "But this urge, which psychologists call “cute aggression,” is a common <input type='text' data-answer='phenomenon'> <input type='text' data-answer='estimated'> to <input type='text' data-answer='affect'> adults.", hint: "hiện tượng - ước tính - ảnh hưởng" },
         { start: 52, end: 57, text: "To better understand this <input type='text' data-answer='peculiar'> case, let's start with what cuteness is.", hint: "kỳ lạ/riêng biệt" },
@@ -179,15 +213,14 @@
         { start: 92, end: 97, text: "When <input type='text' data-answer='participants'> see images containing more features,", hint: "người tham gia" },
         { start: 98, end: 104, text: "they <input type='text' data-answer='tend'> to look at them longer and more often.", hint: "có xu hướng" },
         { start: 105, end: 111, text: "And the photos appear to <input type='text' data-answer='stimulate'> brain regions associated with reward.", hint: "kích thích" },
-        { start: 112, end: 115, text: "Cuteness is also thought to <input type='text' data-answer='influence'> behavior.", hint: "ảnh hưởng" },
+        { start: 112, end: 115, text: "Cuteness is also thought to <input type='text' data-answer='influence'> behavior.", hint: "ảnh hưởng (IELTS)" },
         { start: 115, end: 120, text: "In a 2009 study, people performed better at games <input type='text' data-answer='demanding'> precise movements.", hint: "yêu cầu/đòi hỏi" },
-        { start: 121, end: 127, text: "The results indicated that people use recycling bins more when they have <input type='text' data-answer='cute'> images.", hint: "dễ thương" },
+        { start: 121, end: 127, text: "The results indicated that people use <input type='text' data-answer='recycling'> bins more when they have cute images.", hint: "tái chế" },
         { start: 127, end: 135, text: "The fact that cuteness <input type='text' data-answer='hijacks'> our emotions is not lost on <input type='text' data-answer='advertisers'>.", hint: "khống chế - nhà quảng cáo" },
         { start: 135, end: 145, text: "But why? One <input type='text' data-answer='theory'> is that cute things simply make us want to <input type='text' data-answer='nurture'> them.", hint: "lý thuyết - nuôi dưỡng" },
         { start: 146, end: 154, text: "Because human babies are <input type='text' data-answer='relatively'> helpless, evolution <input type='text' data-answer='favored'> cute infants.", hint: "tương đối - ưu ái" },
         { start: 155, end: 165, text: "And, being <input type='text' data-answer='acutely'> sensitive, we're <input type='text' data-answer='tuned'> into similar features in other species.", hint: "cực kỳ - nhạy bén" },
         { start: 165, end: 171, text: "In fact, as we <input type='text' data-answer='domesticated'> animals, their appearances changed.", hint: "thuần hóa" },
-        { start: 171, end: 180, text: "Some scientists noted a phenomenon called <input type='text' data-answer='domestication'> syndrome.", hint: "thuần hóa" },
         { start: 181, end: 188, text: "Where animals gradually adopted more <input type='text' data-answer='juvenile'> features as they became <input type='text' data-answer='docile'>.", hint: "vị thành niên - dễ bảo" },
         { start: 189, end: 196, text: "These physical changes are <input type='text' data-answer='regulated'> by an <input type='text' data-answer='embryonic'> structure.", hint: "điều chỉnh - thuộc phôi thai" },
         { start: 220, end: 230, text: "Friendly dogs look more like babies. Some theorize we <input type='text' data-answer='domesticated'> ourselves.", hint: "thuần hóa" },
@@ -225,7 +258,11 @@
             const div = document.createElement('div');
             div.className = 'sentence';
             div.id = `s-${index}`;
-            div.innerHTML = `${item.text} <span class="keyword-hint">→ Nghĩa: ${item.hint}</span>`;
+            // Bọc input vào wrapper để hiện đáp án đúng bên dưới khi sai
+            let processedText = item.text.replace(/<input type='text' data-answer='(.*?)'>/g, (match, p1) => {
+                return `<div class="input-wrapper"><input type='text' data-answer='${p1}'><span class="ans-label" style="display:none"></span></div>`;
+            });
+            div.innerHTML = `${processedText} <div class="keyword-hint">Gợi ý: ${item.hint}</div>`;
             container.appendChild(div);
         });
     }
@@ -246,7 +283,6 @@
                         currentEl.classList.add('active');
                         currentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
-
                     if (item.text.includes('input') && !pausedIndices.has(index)) {
                         player.pauseVideo();
                         pausedIndices.add(index);
@@ -259,16 +295,32 @@
 
     function checkAnswers() {
         const inputs = document.querySelectorAll('input');
+        let correctCount = 0;
+        const total = inputs.length;
+
         inputs.forEach(input => {
             const userAnswer = input.value.trim().toLowerCase();
             const correctAnswer = input.getAttribute('data-answer').toLowerCase();
+            const label = input.parentElement.querySelector('.ans-label');
+
             if (userAnswer === correctAnswer) {
                 input.classList.add('correct');
+                input.classList.remove('incorrect');
+                label.style.display = 'none';
+                correctCount++;
             } else {
+                input.classList.add('incorrect');
                 input.classList.remove('correct');
-                input.style.borderBottom = "2.5px solid red";
+                // Hiển thị đáp án đúng bên dưới ô nhập
+                label.innerHTML = `<span class="correct-answer-label">Key: ${correctAnswer}</span>`;
+                label.style.display = 'block';
             }
         });
+
+        const scoreDisplay = document.getElementById('score-display');
+        scoreDisplay.style.display = 'block';
+        scoreDisplay.innerHTML = `Kết quả: ${correctCount} / ${total} câu đúng (${Math.round(correctCount/total*100)}%)`;
+        scoreDisplay.scrollIntoView({ behavior: 'smooth' });
     }
 </script>
 </body>

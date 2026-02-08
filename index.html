@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<title>Học Từ Vựng Qua Phim</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+body{
+  margin:0;
+  font-family:Poppins, sans-serif;
+  background:linear-gradient(135deg,#fde2ff,#e0f7fa,#fff1c1);
+}
+.container{
+  display:grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap:20px;
+  padding:20px;
+  max-width:1400px;
+  margin:auto;
+}
+.card{
+  background:rgba(255,255,255,0.9);
+  border-radius:20px;
+  padding:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.12);
+}
+#subs{max-height:600px;overflow-y:auto;line-height:1.6}
+.line{padding:8px;border-radius:12px;margin-bottom:6px}
+.line.active{background:#c7f0ff}
+input.blank{border:none;border-bottom:2px solid #888;width:120px;font-size:15px}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    <h2>🎬 Movie</h2>
+    <iframe id="player" width="100%" height="480"
+      src="https://www.youtube.com/embed/6_H7Q7kXzq4?enablejsapi=1&start=4487"
+      frameborder="0" allowfullscreen></iframe>
+  </div>
+
+  <div class="card">
+    <h2>📜 Subtitle – Điền từ</h2>
+    <div id="subs"></div>
+  </div>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+let player;
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player');
+}
+
+// ===== LOAD FULL SRT =====
+fetch('subtitles/story.srt')
+ .then(res=>res.text())
+ .then(data=>parseSRT(data));
+
+let subtitles=[];
+const subsDiv=document.getElementById('subs');
+
+function timeToSec(t){
+ let [h,m,s]=t.replace(',','.').split(':');
+ return +h*3600 + +m*60 + parseFloat(s);
+}
+
+function parseSRT(data){
+ data.trim().split(/\n\n+/).forEach(block=>{
+  const lines=block.split('\n');
+  if(lines.length>=3){
+   const [st,et]=lines[1].split(' --> ');
+   let text=lines.slice(2).join(' ');
+
+   // CLOZE: đục lỗ từ dài >5 ký tự
+   text=text.replace(/\b(\w{6,})\b/,(m)=>`<input class='blank' data-answer='${m.toLowerCase()}'>`);
+
+   const obj={
+    start:timeToSec(st),
+    end:timeToSec(et),
+    html:text
+   };
+
+   const div=document.createElement('div');
+   div.className='line';
+   div.innerHTML=text;
+   subsDiv.appendChild(div);
+   obj.el=div;
+   subtitles.push(obj);
+  }
+ });
+}
+
+// ===== SYNC VIDEO =====
+setInterval(()=>{
+ if(!player || !player.getCurrentTime) return;
+ const t=player.getCurrentTime();
+ subtitles.forEach(s=>{
+  if(t>=s.start && t<=s.end){
+   s.el.classList.add('active');
+   s.el.scrollIntoView({block:'center',behavior:'smooth'});
+  }else s.el.classList.remove('active');
+ });
+},300);
+
+// ===== CHECK INPUT =====
+document.addEventListener('input',e=>{
+ if(e.target.classList.contains('blank')){
+  if(e.target.value.toLowerCase()===e.target.dataset.answer){
+   e.target.style.borderColor='green';
+  }
+ }
+});
+</script>
+</body>
+</html>

@@ -3,59 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn English with Ms. Thúy - IELTS Vocabulary</title>
+    <title>Ms. Thúy - English Learning Center</title>
     <style>
         :root {
             --pastel-pink: #ffd1dc;
             --deep-pink: #ffafbd;
             --accent-pink: #ff8fa3;
             --text-color: #4a4a4a;
-            --success-green: #2ecc71;
-            --error-red: #e74c3c;
+            --success: #27ae60;
+            --danger: #e74c3c;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, var(--pastel-pink), var(--deep-pink));
             color: var(--text-color);
             margin: 0;
-            padding: 10px;
+            padding: 20px;
             min-height: 100vh;
         }
 
         header {
             text-align: center;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.6);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
             border-radius: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-
-        h1 { margin: 0; color: #d84361; font-size: 2.2em; }
 
         .container {
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
-            gap: 20px;
+            gap: 25px;
             max-width: 1500px;
             margin: 0 auto;
         }
 
+        /* --- Cột Video & Bảng điểm --- */
         .video-section {
             position: sticky;
-            top: 10px;
+            top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
             height: 0;
-            border: 10px solid white;
+            border: 8px solid white;
             border-radius: 25px;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            background: #000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         .video-container iframe {
@@ -63,112 +64,126 @@
             top: 0; left: 0; width: 100%; height: 100%;
         }
 
+        /* Bảng điểm nổi bật */
+        #result-board {
+            display: none; /* Ẩn lúc đầu */
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 3px solid var(--accent-pink);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .score-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #d84361;
+            margin: 10px 0;
+        }
+
+        .score-detail {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        /* --- Cột Transcript --- */
         .transcript-section {
             background: rgba(255, 255, 255, 0.9);
-            padding: 25px;
+            padding: 30px;
             border-radius: 25px;
-            height: 80vh;
+            height: 85vh;
             overflow-y: auto;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             scroll-behavior: smooth;
         }
 
         .sentence {
-            padding: 18px;
-            margin: 12px 0;
+            padding: 20px;
+            margin-bottom: 15px;
             border-radius: 15px;
-            transition: all 0.4s ease;
-            line-height: 2;
-            border-left: 6px solid transparent;
             background: rgba(255, 255, 255, 0.5);
+            transition: 0.3s;
+            line-height: 2.2;
+            border-left: 6px solid transparent;
         }
 
         .sentence.active {
             background: white;
             border-left: 6px solid var(--accent-pink);
-            transform: scale(1.01);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
-        .input-wrapper {
+        /* Ô nhập liệu */
+        .input-group {
             display: inline-block;
-            text-align: center;
-            vertical-align: middle;
+            position: relative;
+            margin: 0 5px;
         }
 
         input[type="text"] {
             border: none;
-            border-bottom: 2.5px solid var(--accent-pink);
+            border-bottom: 2px solid var(--accent-pink);
             background: #fff0f3;
             width: 140px;
             text-align: center;
+            font-size: 1em;
             font-weight: bold;
             color: #d84361;
             outline: none;
-            padding: 2px;
-            margin: 0 5px;
+            border-radius: 5px 5px 0 0;
         }
 
-        input.correct {
-            background: var(--success-green) !important;
-            color: white !important;
-            border-bottom-color: transparent;
-        }
+        input.correct { background-color: #d4edda !important; color: var(--success) !important; border-bottom-color: var(--success); }
+        input.wrong { background-color: #f8d7da !important; color: var(--danger) !important; border-bottom-color: var(--danger); }
 
-        input.incorrect {
-            background: #ffe6e6 !important;
-            border-bottom-color: var(--error-red);
-        }
-
-        .correct-answer-label {
-            display: block;
-            font-size: 0.75em;
-            color: var(--error-red);
+        .correct-key {
+            display: none;
+            font-size: 0.8em;
+            color: var(--danger);
             font-weight: bold;
-            margin-top: -5px;
+            text-transform: uppercase;
+            position: absolute;
+            bottom: -22px;
+            left: 0;
+            width: 100%;
         }
 
-        .keyword-hint {
+        .hint-text {
             display: block;
             font-size: 0.85em;
-            color: #666;
+            color: #7f8c8d;
             font-style: italic;
-            margin-top: 8px;
-            border-top: 1px dashed #ffd1dc;
-        }
-
-        .score-board {
-            margin-top: 15px;
-            padding: 15px;
-            background: white;
-            border-radius: 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.2em;
-            color: #d84361;
-            display: none;
+            margin-top: 5px;
+            line-height: 1.4;
         }
 
         .controls {
-            margin-top: 15px;
             display: flex;
-            justify-content: center;
             gap: 10px;
+            justify-content: center;
         }
 
         button {
-            padding: 12px 25px;
-            border-radius: 25px;
+            padding: 15px 30px;
+            border-radius: 30px;
             border: none;
-            cursor: pointer;
             font-weight: bold;
+            cursor: pointer;
             transition: 0.3s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        .btn-check { background: #d84361; color: white; }
-        .btn-check:hover { background: #b7324d; transform: translateY(-2px); }
+        .btn-check { background: #d84361; color: white; font-size: 1.1em; }
+        .btn-check:hover { background: #b7324d; transform: scale(1.05); }
 
-        @media (max-width: 1100px) {
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1000px) {
             .container { grid-template-columns: 1fr; }
             .video-section { position: relative; }
         }
@@ -178,7 +193,7 @@
 
 <header>
     <h1>🌸 Learn English with Ms. Thúy 🌸</h1>
-    <p>Chủ đề: <b>Cute Aggression</b> - Điền từ vào chỗ trống (40 câu)</p>
+    <p>Bài tập đục lỗ IELTS: <b>Science of Cuteness</b></p>
 </header>
 
 <div class="container">
@@ -186,141 +201,135 @@
         <div class="video-container">
             <div id="player"></div>
         </div>
-        
-        <div id="score-display" class="score-board"></div>
+
+        <div id="result-board">
+            <h3>🎉 KẾT QUẢ CỦA BẠN 🎉</h3>
+            <div class="score-number" id="final-score">0 / 0</div>
+            <div class="score-detail" id="score-percentage">0%</div>
+            <div id="motivational-msg">Cố gắng lên nhé!</div>
+        </div>
 
         <div class="controls">
-            <button class="btn-check" onclick="checkAnswers()">Kiểm tra đáp án & Tính điểm</button>
-            <button style="background: white; color: #888;" onclick="location.reload()">Làm lại bài</button>
+            <button class="btn-check" onclick="calculateResult()">NỘP BÀI & KIỂM TRA</button>
+            <button style="background: white;" onclick="location.reload()">LÀM LẠI</button>
         </div>
     </div>
 
-    <div class="transcript-section" id="transcript-container"></div>
+    <div class="transcript-section" id="transcript-list">
+        </div>
 </div>
 
 <script>
-    const transcriptData = [
-        { start: 7, end: 10, text: "Watching a kitten <input type='text' data-answer='fumbling'> around,", hint: "lóng ngóng/vụng về" },
-        { start: 10, end: 18, text: "it might feel as if you’ve never <input type='text' data-answer='encountered'> anything so <input type='text' data-answer='devastatingly'> adorable in your <input type='text' data-answer='mortal'> life.", hint: "bắt gặp - tột cùng - trần thế" },
-        { start: 25, end: 35, text: "But you may also feel the <input type='text' data-answer='conflicting'> <input type='text' data-answer='urge'> to <input type='text' data-answer='squeeze'> or smush the kitten,", hint: "mâu thuẫn - sự thôi thúc - nựng/bóp" },
-        { start: 36, end: 40, text: "However, you don’t. And you might be <input type='text' data-answer='appalled'> by yourself.", hint: "kinh hãi/sốc" },
-        { start: 40, end: 51, text: "But this urge, which psychologists call “cute aggression,” is a common <input type='text' data-answer='phenomenon'> <input type='text' data-answer='estimated'> to <input type='text' data-answer='affect'> adults.", hint: "hiện tượng - ước tính - ảnh hưởng" },
-        { start: 52, end: 57, text: "To better understand this <input type='text' data-answer='peculiar'> case, let's start with what cuteness is.", hint: "kỳ lạ/riêng biệt" },
-        { start: 58, end: 67, text: "In 1943, one scientist created a baby <input type='text' data-answer='schema'> that <input type='text' data-answer='identified'> key <input type='text' data-answer='features'>.", hint: "lược đồ - xác định - đặc điểm" },
-        { start: 67, end: 71, text: "Like plump cheeks, large eyes, and short <input type='text' data-answer='limbs'>.", hint: "chi/tay chân" },
-        { start: 71, end: 79, text: "These <input type='text' data-answer='characteristics'> were placed in <input type='text' data-answer='opposition'> with those <input type='text' data-answer='perceived'> as less cute.", hint: "đặc tính - sự đối lập - nhận thức" },
-        { start: 80, end: 87, text: "Decades of study have since <input type='text' data-answer='indicated'> that this schema <input type='text' data-answer='reliably'> tracks with us.", hint: "chỉ ra - đáng tin cậy" },
-        { start: 92, end: 97, text: "When <input type='text' data-answer='participants'> see images containing more features,", hint: "người tham gia" },
-        { start: 98, end: 104, text: "they <input type='text' data-answer='tend'> to look at them longer and more often.", hint: "có xu hướng" },
-        { start: 105, end: 111, text: "And the photos appear to <input type='text' data-answer='stimulate'> brain regions associated with reward.", hint: "kích thích" },
-        { start: 112, end: 115, text: "Cuteness is also thought to <input type='text' data-answer='influence'> behavior.", hint: "ảnh hưởng (IELTS)" },
-        { start: 115, end: 120, text: "In a 2009 study, people performed better at games <input type='text' data-answer='demanding'> precise movements.", hint: "yêu cầu/đòi hỏi" },
-        { start: 121, end: 127, text: "The results indicated that people use <input type='text' data-answer='recycling'> bins more when they have cute images.", hint: "tái chế" },
-        { start: 127, end: 135, text: "The fact that cuteness <input type='text' data-answer='hijacks'> our emotions is not lost on <input type='text' data-answer='advertisers'>.", hint: "khống chế - nhà quảng cáo" },
-        { start: 135, end: 145, text: "But why? One <input type='text' data-answer='theory'> is that cute things simply make us want to <input type='text' data-answer='nurture'> them.", hint: "lý thuyết - nuôi dưỡng" },
-        { start: 146, end: 154, text: "Because human babies are <input type='text' data-answer='relatively'> helpless, evolution <input type='text' data-answer='favored'> cute infants.", hint: "tương đối - ưu ái" },
-        { start: 155, end: 165, text: "And, being <input type='text' data-answer='acutely'> sensitive, we're <input type='text' data-answer='tuned'> into similar features in other species.", hint: "cực kỳ - nhạy bén" },
-        { start: 165, end: 171, text: "In fact, as we <input type='text' data-answer='domesticated'> animals, their appearances changed.", hint: "thuần hóa" },
-        { start: 181, end: 188, text: "Where animals gradually adopted more <input type='text' data-answer='juvenile'> features as they became <input type='text' data-answer='docile'>.", hint: "vị thành niên - dễ bảo" },
-        { start: 189, end: 196, text: "These physical changes are <input type='text' data-answer='regulated'> by an <input type='text' data-answer='embryonic'> structure.", hint: "điều chỉnh - thuộc phôi thai" },
-        { start: 220, end: 230, text: "Friendly dogs look more like babies. Some theorize we <input type='text' data-answer='domesticated'> ourselves.", hint: "thuần hóa" },
-        { start: 246, end: 254, text: "Ancient humans selected for <input type='text' data-answer='friendlier'> individuals.", hint: "thân thiện hơn" },
-        { start: 255, end: 265, text: "Which led to physical characteristics that <input type='text' data-answer='distinguish'> us.", hint: "phân biệt" },
-        { start: 271, end: 282, text: "Cute aggression is not <input type='text' data-answer='linked'> to the actual <input type='text' data-answer='intention'> to do harm.", hint: "liên kết - ý định" },
-        { start: 283, end: 289, text: "Instead, it results from emotional <input type='text' data-answer='overload'>.", hint: "quá tải" },
-        { start: 290, end: 298, text: "Certain people feel <input type='text' data-answer='overwhelming'> positive emotions.", hint: "tràn ngập/áp đảo" },
-        { start: 299, end: 309, text: "Aggressive thoughts are the brain's way of <input type='text' data-answer='regulating'> those intense feelings.", hint: "điều chỉnh" },
-        { start: 310, end: 327, text: "Cuteness <input type='text' data-answer='wields'> immense, <input type='text' data-answer='consequential'> power. It runs the world.", hint: "nắm giữ - hệ trọng" }
+    const data = [
+        { s: 7, e: 10, t: "Watching a kitten <div class='input-group'><input type='text' data-ans='fumbling'><span class='correct-key'></span></div> around,", h: "lóng ngóng, vụng về" },
+        { s: 10, e: 18, t: "it might feel as if you’ve never <div class='input-group'><input type='text' data-ans='encountered'><span class='correct-key'></span></div> anything so <div class='input-group'><input type='text' data-ans='devastatingly'><span class='correct-key'></span></div> adorable in your <div class='input-group'><input type='text' data-ans='mortal'><span class='correct-key'></span></div> life.", h: "chạm trán - tột cùng - trần thế" },
+        { s: 25, e: 35, t: "But you may also feel the <div class='input-group'><input type='text' data-ans='conflicting'><span class='correct-key'></span></div> <div class='input-group'><input type='text' data-ans='urge'><span class='correct-key'></span></div> to <div class='input-group'><input type='text' data-ans='squeeze'><span class='correct-key'></span></div> or smush the kitten.", h: "mâu thuẫn - sự thôi thúc - nựng/bóp" },
+        { s: 36, e: 40, t: "However, you don’t. And you might be <div class='input-group'><input type='text' data-ans='appalled'><span class='correct-key'></span></div> by yourself.", h: "kinh hãi, sốc" },
+        { s: 40, e: 51, t: "But this urge, which psychologists call “cute aggression,” is a common <div class='input-group'><input type='text' data-ans='phenomenon'><span class='correct-key'></span></div> <div class='input-group'><input type='text' data-ans='estimated'><span class='correct-key'></span></div> to <div class='input-group'><input type='text' data-ans='affect'><span class='correct-key'></span></div> adults.", h: "hiện tượng - ước tính - ảnh hưởng" },
+        { s: 52, e: 57, t: "To better understand this <div class='input-group'><input type='text' data-ans='peculiar'><span class='correct-key'></span></div> case, let's start with what cuteness is.", h: "kỳ lạ, riêng biệt" },
+        { s: 58, e: 67, t: "In 1943, one scientist created a baby <div class='input-group'><input type='text' data-ans='schema'><span class='correct-key'></span></div> that <div class='input-group'><input type='text' data-ans='identified'><span class='correct-key'></span></div> key <div class='input-group'><input type='text' data-ans='features'><span class='correct-key'></span></div>.", h: "lược đồ - xác định - đặc điểm" },
+        { s: 71, e: 79, t: "These <div class='input-group'><input type='text' data-ans='characteristics'><span class='correct-key'></span></div> were placed in <div class='input-group'><input type='text' data-ans='opposition'><span class='correct-key'></span></div> with those <div class='input-group'><input type='text' data-ans='perceived'><span class='correct-key'></span></div> as less cute.", h: "đặc tính - sự đối lập - nhận thức" },
+        { s: 80, e: 87, t: "Decades of study have since <div class='input-group'><input type='text' data-ans='indicated'><span class='correct-key'></span></div> that this schema <div class='input-group'><input type='text' data-ans='reliably'><span class='correct-key'></span></div> tracks with us.", h: "chỉ ra - đáng tin cậy" },
+        { s: 92, e: 104, t: "When <div class='input-group'><input type='text' data-ans='participants'><span class='correct-key'></span></div> see images, they <div class='input-group'><input type='text' data-ans='tend'><span class='correct-key'></span></div> to look at them longer.", h: "người tham gia - có xu hướng" },
+        { s: 105, e: 115, t: "Photos appear to <div class='input-group'><input type='text' data-ans='stimulate'><span class='correct-key'></span></div> brain regions. Cuteness <div class='input-group'><input type='text' data-ans='influences'><span class='correct-key'></span></div> behavior.", h: "kích thích - ảnh hưởng" },
+        { s: 121, e: 135, t: "Cuteness <div class='input-group'><input type='text' data-ans='hijacks'><span class='correct-key'></span></div> our emotions. It is not lost on <div class='input-group'><input type='text' data-ans='advertisers'><span class='correct-key'></span></div>.", h: "khống chế - nhà quảng cáo" },
+        { s: 135, e: 145, t: "One <div class='input-group'><input type='text' data-ans='theory'><span class='correct-key'></span></div> is that cute things make us want to <div class='input-group'><input type='text' data-ans='nurture'><span class='correct-key'></span></div> them.", h: "lý thuyết - nuôi dưỡng" },
+        { s: 146, e: 154, t: "Human babies are <div class='input-group'><input type='text' data-ans='relatively'><span class='correct-key'></span></div> helpless, evolution <div class='input-group'><input type='text' data-ans='favored'><span class='correct-key'></span></div> cuteness.", h: "tương đối - ưu ái" },
+        { s: 155, e: 165, t: "We are <div class='input-group'><input type='text' data-ans='acutely'><span class='correct-key'></span></div> sensitive and <div class='input-group'><input type='text' data-ans='tuned'><span class='correct-key'></span></div> into similar features.", h: "cực kỳ - nhạy bén" },
+        { s: 165, e: 171, t: "As we <div class='input-group'><input type='text' data-ans='domesticated'><span class='correct-key'></span></div> animals, their appearances changed.", h: "thuần hóa" },
+        { s: 181, e: 196, t: "Animals adopted <div class='input-group'><input type='text' data-ans='juvenile'><span class='correct-key'></span></div> features and became <div class='input-group'><input type='text' data-ans='docile'><span class='correct-key'></span></div>. This is <div class='input-group'><input type='text' data-ans='regulated'><span class='correct-key'></span></div> by phôi thai.", h: "trẻ con - dễ bảo - điều chỉnh" },
+        { s: 255, e: 265, t: "Physical characteristics <div class='input-group'><input type='text' data-ans='distinguish'><span class='correct-key'></span></div> us from cousins.", h: "phân biệt" },
+        { s: 271, e: 289, t: "It's not <div class='input-group'><input type='text' data-ans='linked'><span class='correct-key'></span></div> to harm, but results from <div class='input-group'><input type='text' data-ans='emotional'><span class='correct-key'></span></div> <div class='input-group'><input type='text' data-ans='overload'><span class='correct-key'></span></div>.", h: "liên quan - cảm xúc - quá tải" },
+        { s: 290, e: 309, t: "It is the brain's way of <div class='input-group'><input type='text' data-ans='regulating'><span class='correct-key'></span></div> <div class='input-group'><input type='text' data-ans='overwhelming'><span class='correct-key'></span></div> feelings.", h: "điều chỉnh - tràn ngập" },
+        { s: 310, e: 327, t: "Cuteness <div class='input-group'><input type='text' data-ans='wields'><span class='correct-key'></span></div> immense, <div class='input-group'><input type='text' data-ans='consequential'><span class='correct-key'></span></div> power.", h: "nắm giữ - hệ trọng" }
     ];
 
+    // YouTube API
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    document.getElementsByTagName('head')[0].appendChild(tag);
 
     var player;
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
             videoId: 'yxsoE3jO8HM',
-            playerVars: { 'autoplay': 0, 'rel': 0, 'modestbranding': 1 },
-            events: { 'onReady': onPlayerReady }
+            events: { 'onReady': startApp }
         });
     }
 
-    function onPlayerReady() {
-        renderTranscript();
-        setInterval(updateHighlight, 400);
+    function startApp() {
+        render();
+        setInterval(sync, 400);
     }
 
-    function renderTranscript() {
-        const container = document.getElementById('transcript-container');
-        transcriptData.forEach((item, index) => {
+    function render() {
+        const list = document.getElementById('transcript-list');
+        data.forEach((item, i) => {
             const div = document.createElement('div');
             div.className = 'sentence';
-            div.id = `s-${index}`;
-            // Bọc input vào wrapper để hiện đáp án đúng bên dưới khi sai
-            let processedText = item.text.replace(/<input type='text' data-answer='(.*?)'>/g, (match, p1) => {
-                return `<div class="input-wrapper"><input type='text' data-answer='${p1}'><span class="ans-label" style="display:none"></span></div>`;
-            });
-            div.innerHTML = `${processedText} <div class="keyword-hint">Gợi ý: ${item.hint}</div>`;
-            container.appendChild(div);
+            div.id = 'sen-' + i;
+            div.innerHTML = `${item.t} <div class='hint-text'>Nghĩa: ${item.h}</div>`;
+            list.appendChild(div);
         });
     }
 
-    let lastActiveIndex = -1;
-    let pausedIndices = new Set();
+    let lastIdx = -1;
+    let stopList = new Set();
 
-    function updateHighlight() {
-        if (!player || typeof player.getCurrentTime !== 'function') return;
-        const currentTime = player.getCurrentTime();
-        
-        transcriptData.forEach((item, index) => {
-            if (currentTime >= item.start && currentTime <= item.end) {
-                if (lastActiveIndex !== index) {
-                    document.querySelectorAll('.sentence').forEach(s => s.classList.remove('active'));
-                    const currentEl = document.getElementById(`s-${index}`);
-                    if (currentEl) {
-                        currentEl.classList.add('active');
-                        currentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                    if (item.text.includes('input') && !pausedIndices.has(index)) {
+    function sync() {
+        let curr = player.getCurrentTime();
+        data.forEach((item, i) => {
+            if (curr >= item.s && curr <= item.e) {
+                if (lastIdx !== i) {
+                    document.querySelectorAll('.sentence').forEach(el => el.classList.remove('active'));
+                    const activeEl = document.getElementById('sen-' + i);
+                    activeEl.classList.add('active');
+                    activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                    if (item.t.includes('input') && !stopList.has(i)) {
                         player.pauseVideo();
-                        pausedIndices.add(index);
+                        stopList.add(i);
                     }
-                    lastActiveIndex = index;
+                    lastIdx = i;
                 }
             }
         });
     }
 
-    function checkAnswers() {
+    function calculateResult() {
         const inputs = document.querySelectorAll('input');
-        let correctCount = 0;
-        const total = inputs.length;
+        let correct = 0;
+        let total = inputs.length;
 
         inputs.forEach(input => {
-            const userAnswer = input.value.trim().toLowerCase();
-            const correctAnswer = input.getAttribute('data-answer').toLowerCase();
-            const label = input.parentElement.querySelector('.ans-label');
+            let user = input.value.trim().toLowerCase();
+            let ans = input.getAttribute('data-ans').toLowerCase();
+            let keyLabel = input.nextElementSibling;
 
-            if (userAnswer === correctAnswer) {
-                input.classList.add('correct');
-                input.classList.remove('incorrect');
-                label.style.display = 'none';
-                correctCount++;
+            if (user === ans) {
+                input.className = 'correct';
+                keyLabel.style.display = 'none';
+                correct++;
             } else {
-                input.classList.add('incorrect');
-                input.classList.remove('correct');
-                // Hiển thị đáp án đúng bên dưới ô nhập
-                label.innerHTML = `<span class="correct-answer-label">Key: ${correctAnswer}</span>`;
-                label.style.display = 'block';
+                input.className = 'wrong';
+                keyLabel.innerText = "Key: " + ans;
+                keyLabel.style.display = 'block';
             }
         });
 
-        const scoreDisplay = document.getElementById('score-display');
-        scoreDisplay.style.display = 'block';
-        scoreDisplay.innerHTML = `Kết quả: ${correctCount} / ${total} câu đúng (${Math.round(correctCount/total*100)}%)`;
-        scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+        // Hiện bảng điểm
+        const board = document.getElementById('result-board');
+        board.style.display = 'block';
+        document.getElementById('final-score').innerText = `${correct} / ${total}`;
+        let percent = Math.round((correct / total) * 100);
+        document.getElementById('score-percentage').innerText = percent + "%";
+        
+        const msg = document.getElementById('motivational-msg');
+        if(percent >= 80) msg.innerText = "Tuyệt vời! Bạn là cao thủ IELTS!";
+        else if(percent >= 50) msg.innerText = "Khá lắm! Cố gắng thêm chút nữa nhé!";
+        else msg.innerText = "Đừng nản chí, hãy nghe lại một lần nữa!";
+
+        board.scrollIntoView({ behavior: 'smooth' });
     }
 </script>
 </body>

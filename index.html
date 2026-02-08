@@ -2,117 +2,131 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8" />
-<title>Học Từ Vựng Qua Phim</title>
+<title>Learn Vocabulary Through Movie</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 body{
-  margin:0;
-  font-family:Poppins, sans-serif;
-  background:linear-gradient(135deg,#fde2ff,#e0f7fa,#fff1c1);
+  margin:0; font-family:Poppins, sans-serif;
+  background: linear-gradient(135deg,#fde2e4,#e0f2fe);
 }
 .container{
-  display:grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap:20px;
-  padding:20px;
-  max-width:1400px;
-  margin:auto;
+  display:grid; grid-template-columns: 1fr 1fr; gap:20px;
+  padding:20px; max-width:1400px; margin:auto;
 }
-.card{
-  background:rgba(255,255,255,0.9);
-  border-radius:20px;
-  padding:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.12);
+.video-box, .subtitle-box{
+  background:#fff; border-radius:20px; padding:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,.15);
 }
-#subs{max-height:600px;overflow-y:auto;line-height:1.6}
-.line{padding:8px;border-radius:12px;margin-bottom:6px}
-.line.active{background:#c7f0ff}
-input.blank{border:none;border-bottom:2px solid #888;width:120px;font-size:15px}
+.subtitle-box{ max-height:420px; overflow-y:auto; }
+.subtitle-line{
+  padding:6px 10px; border-radius:10px; margin-bottom:6px;
+}
+.subtitle-line.active{
+  background:linear-gradient(90deg,#a5f3fc,#fbcfe8);
+  font-weight:600;
+}
+.quiz{
+  grid-column:1/3; background:#fff; border-radius:20px;
+  padding:20px; box-shadow:0 10px 30px rgba(0,0,0,.15);
+}
+input.blank{
+  border:none; border-bottom:2px solid #555; outline:none;
+  width:120px; font-size:16px;
+}
+button{
+  background:linear-gradient(90deg,#a5f3fc,#fbcfe8);
+  border:none; padding:10px 20px; border-radius:30px;
+  font-size:16px; cursor:pointer; margin-top:15px;
+}
 </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="card">
-    <h2>🎬 Movie</h2>
-    <iframe id="player" width="100%" height="480"
-      src="https://www.youtube.com/embed/6_H7Q7kXzq4?enablejsapi=1&start=4487"
-      frameborder="0" allowfullscreen></iframe>
+
+  <!-- VIDEO -->
+  <div class="video-box">
+    <video id="video" width="100%" height="400" controls>
+      <source src="https://docs.google.com/uc?export=download&id=1luLOxU-Vya_yTp678JZPVeCp0ebFbLfN" type="video/mp4">
+    </video>
   </div>
 
-  <div class="card">
-    <h2>📜 Subtitle – Điền từ</h2>
-    <div id="subs"></div>
+  <!-- SUBTITLE -->
+  <div class="subtitle-box" id="subtitleBox"></div>
+
+  <!-- QUIZ -->
+  <div class="quiz">
+    <h2>📝 Vocabulary Quiz</h2>
+    <div id="quizBox"></div>
+    <button onclick="gradeQuiz()">Chấm điểm</button>
+    <p id="result"></p>
   </div>
+
 </div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
 <script>
-let player;
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player');
-}
+// === LOAD & PARSE SRT ===
+const srtText = `1
+00:00:01,000 --> 00:00:04,000
+She brought a homeless man home.
 
-// ===== LOAD FULL SRT =====
-fetch('subtitles/story.srt')
- .then(res=>res.text())
- .then(data=>parseSRT(data));
-
-let subtitles=[];
-const subsDiv=document.getElementById('subs');
-
-function timeToSec(t){
- let [h,m,s]=t.replace(',','.').split(':');
- return +h*3600 + +m*60 + parseFloat(s);
-}
+2
+00:00:05,000 --> 00:00:08,000
+She had no idea he was a billionaire CEO.`;
 
 function parseSRT(data){
- data.trim().split(/\n\n+/).forEach(block=>{
-  const lines=block.split('\n');
-  if(lines.length>=3){
-   const [st,et]=lines[1].split(' --> ');
-   let text=lines.slice(2).join(' ');
-
-   // CLOZE: đục lỗ từ dài >5 ký tự
-   text=text.replace(/\b(\w{6,})\b/,(m)=>`<input class='blank' data-answer='${m.toLowerCase()}'>`);
-
-   const obj={
-    start:timeToSec(st),
-    end:timeToSec(et),
-    html:text
-   };
-
-   const div=document.createElement('div');
-   div.className='line';
-   div.innerHTML=text;
-   subsDiv.appendChild(div);
-   obj.el=div;
-   subtitles.push(obj);
-  }
- });
+  return data.trim().split(/\n\n+/).map(block=>{
+    const lines = block.split('\n');
+    const time = lines[1].split(' --> ');
+    const toSec = t => {
+      const [h,m,s] = t.replace(',',':').split(':');
+      return (+h)*3600+(+m)*60+(+s);
+    };
+    return { start: toSec(time[0]), end: toSec(time[1]), text: lines.slice(2).join(' ') };
+  });
 }
 
-// ===== SYNC VIDEO =====
-setInterval(()=>{
- if(!player || !player.getCurrentTime) return;
- const t=player.getCurrentTime();
- subtitles.forEach(s=>{
-  if(t>=s.start && t<=s.end){
-   s.el.classList.add('active');
-   s.el.scrollIntoView({block:'center',behavior:'smooth'});
-  }else s.el.classList.remove('active');
- });
-},300);
+const subtitles = parseSRT(srtText);
 
-// ===== CHECK INPUT =====
-document.addEventListener('input',e=>{
- if(e.target.classList.contains('blank')){
-  if(e.target.value.toLowerCase()===e.target.dataset.answer){
-   e.target.style.borderColor='green';
-  }
- }
+const subtitleBox = document.getElementById('subtitleBox');
+subtitles.forEach((s,i)=>{
+  const div=document.createElement('div');
+  div.className='subtitle-line';
+  div.id='line'+i;
+  div.innerText=s.text;
+  subtitleBox.appendChild(div);
 });
+
+// === SYNC VIDEO & SUBTITLE ===
+const video = document.getElementById('video');
+video.addEventListener('timeupdate',()=>{
+  const t = video.currentTime;
+  subtitles.forEach((s,i)=>{
+    const line=document.getElementById('line'+i);
+    if(t>=s.start && t<=s.end){
+      line.classList.add('active');
+      line.scrollIntoView({behavior:'smooth', block:'center'});
+    } else line.classList.remove('active');
+  });
+});
+
+// QUIZ from subtitles
+const quizWords = ['homeless','billionaire'];
+const quizBox = document.getElementById('quizBox');
+quizWords.forEach((w,i)=>{
+  quizBox.innerHTML += `<p>${i+1}. She met a <input class="blank" data-answer="${w}"> man.</p>`;
+});
+
+function gradeQuiz(){
+  let score=0;
+  document.querySelectorAll('.blank').forEach(i=>{
+    if(i.value.toLowerCase().trim()===i.dataset.answer) score++;
+  });
+  document.getElementById('result').innerText = `Điểm: ${score}/${quizWords.length}`;
+}
 </script>
+
 </body>
 </html>
+

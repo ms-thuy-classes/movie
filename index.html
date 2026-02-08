@@ -3,124 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ms. Thúy - IELTS English</title>
+    <title>Learn English with Ms. Thúy</title>
     <style>
         :root {
-            --pastel-pink: #ffd1dc;
-            --deep-pink: #ffafbd;
+            --primary-pink: #ffd1dc;
+            --dark-pink: #d84361;
             --accent-pink: #ff8fa3;
-            --text-color: #4a4a4a;
-            --success: #27ae60;
-            --danger: #e74c3c;
+            --bg-color: #fff5f7;
+            --success-green: #27ae60;
+            --error-red: #e74c3c;
         }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, var(--pastel-pink), var(--deep-pink));
-            color: var(--text-color);
-            margin: 0; padding: 20px; min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-pink);
+            margin: 0;
+            padding: 20px;
+            color: #4a4a4a;
+        }
+
+        /* Tiêu đề chính */
+        .main-header {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .main-header h1 {
+            margin: 0;
+            color: var(--dark-pink);
+            font-size: 2.5em;
         }
 
         .container {
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
-            gap: 25px;
+            gap: 20px;
             max-width: 1600px;
             margin: 0 auto;
         }
 
-        .video-section { position: sticky; top: 20px; }
-
-        .video-container {
-            position: relative; padding-bottom: 56.25%; height: 0;
-            border: 8px solid white; border-radius: 25px;
-            overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        /* Phần Video */
+        .video-section {
+            position: sticky;
+            top: 20px;
         }
 
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            border: 10px solid white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: #000;
+        }
 
-        /* Bảng điều khiển & Điểm số */
-        .controls-container {
-            background: white; margin-top: 20px; padding: 20px;
-            border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        /* Thanh điều khiển & Điểm số */
+        .control-panel {
+            background: white;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .score-box {
+            background: var(--bg-color);
+            border: 2px solid var(--accent-pink);
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: var(--dark-pink);
+            min-width: 100px;
             text-align: center;
         }
 
-        .score-display {
-            font-size: 1.4em; font-weight: bold; color: #d84361;
-            margin-bottom: 15px; display: none;
-        }
-
-        .btn-group { display: flex; gap: 10px; justify-content: center; }
-
         button {
-            padding: 12px 25px; border-radius: 25px; border: none;
-            font-weight: bold; cursor: pointer; transition: 0.3s;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1em;
         }
 
-        .btn-submit { background: #d84361; color: white; }
+        .btn-submit { background: var(--dark-pink); color: white; }
         .btn-submit:hover { background: #b7324d; transform: scale(1.05); }
+        .btn-reset { background: #eee; color: #666; }
 
-        /* Cột Transcript */
-        .transcript-section {
-            background: rgba(255, 255, 255, 0.9); padding: 30px;
-            border-radius: 25px; height: 85vh; overflow-y: auto;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); scroll-behavior: smooth;
+        /* Phần Transcript */
+        .transcript-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 25px;
+            height: 80vh;
+            overflow-y: auto;
+            scroll-behavior: smooth;
         }
 
-        .sentence {
-            padding: 15px; margin-bottom: 20px; border-radius: 15px;
-            background: white; line-height: 2.2; border-left: 5px solid transparent;
+        .sentence-card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            line-height: 2.2;
+            border-left: 5px solid transparent;
         }
 
-        .sentence.active { border-left-color: var(--accent-pink); background: #fffafb; }
+        .sentence-card.active {
+            border-left-color: var(--accent-pink);
+            background: #fffafa;
+        }
 
-        /* Input & Key display */
-        .input-item { display: inline-flex; align-items: center; gap: 5px; margin: 0 5px; }
+        /* Input và Hiển thị đáp án */
+        .input-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 5px;
+            vertical-align: middle;
+        }
 
         input[type="text"] {
-            border: none; border-bottom: 2px solid var(--accent-pink);
-            background: #fff0f3; width: 130px; text-align: center;
-            font-weight: bold; color: #d84361; border-radius: 5px;
+            border: none;
+            border-bottom: 2px solid var(--accent-pink);
+            background: #fff0f3;
+            width: 130px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--dark-pink);
+            padding: 2px;
+            border-radius: 5px;
         }
 
-        input.correct { background: #d4edda !important; color: var(--success) !important; border-bottom-color: var(--success); }
-        input.wrong { background: #f8d7da !important; color: var(--danger) !important; border-bottom-color: var(--danger); }
+        input.correct { background: #d4edda !important; color: var(--success-green) !important; border-bottom-color: var(--success-green); }
+        input.wrong { background: #f8d7da !important; color: var(--error-red) !important; border-bottom-color: var(--error-red); }
 
-        .key-reveal {
-            font-size: 0.8em; color: var(--danger); font-weight: bold;
-            padding: 2px 6px; border: 1px solid var(--danger); border-radius: 4px;
-            background: white; display: none;
+        .key-tag {
+            font-size: 0.75em;
+            color: var(--error-red);
+            font-weight: bold;
+            border: 1px solid var(--error-red);
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: white;
+            display: none;
+            white-space: nowrap;
         }
 
-        .hint-box { font-size: 0.85em; color: #666; font-style: italic; margin-top: 8px; border-top: 1px dashed #ffd1dc; }
+        .hint {
+            display: block;
+            font-size: 0.85em;
+            color: #888;
+            font-style: italic;
+            margin-top: 10px;
+            border-top: 1px dashed #ffd1dc;
+            padding-top: 5px;
+        }
 
-        @media (max-width: 1100px) { .container { grid-template-columns: 1fr; } }
+        @media (max-width: 1000px) {
+            .container { grid-template-columns: 1fr; }
+            .video-section { position: relative; }
+        }
     </style>
 </head>
 <body>
 
+<header class="main-header">
+    <h1>🌸 Learn with Ms. Thúy 🌸</h1>
+</header>
+
 <div class="container">
     <div class="video-section">
-        <div class="video-container"><div id="player"></div></div>
-        
-        <div class="controls-container">
-            <div id="score-text" class="score-display">ĐIỂM CỦA BẠN: 0 / 40 (0%)</div>
-            <div class="btn-group">
-                <button class="btn-submit" onclick="gradeWork()">NỘP BÀI & KIỂM TRA</button>
-                <button style="background: #eee;" onclick="location.reload()">LÀM LẠI</button>
-            </div>
+        <div class="video-wrapper">
+            <div id="player"></div>
+        </div>
+
+        <div class="control-panel">
+            <div class="score-box" id="final-score">SCORE: 0 / 40</div>
+            <button class="btn-submit" onclick="checkAllAnswers()">NỘP BÀI & KIỂM TRA</button>
+            <button class="btn-reset" onclick="location.reload()">LÀM LẠI</button>
         </div>
     </div>
 
-    <div class="transcript-section" id="list"></div>
+    <div class="transcript-container" id="transcript-list"></div>
 </div>
 
 <script>
-    const quiz = [
+    const transcriptData = [
         { s: 7, e: 10, t: "Watching a kitten [fumbling] around,", h: "lóng ngóng, vụng về" },
         { s: 10, e: 18, t: "it might feel as if you’ve never [encountered] anything so [devastatingly] adorable in your [mortal] life.", h: "chạm trán - tột cùng - trần thế" },
-        { s: 25, e: 35, t: "But you may also feel the [conflicting] [urge] to [squeeze] or smush the kitten.", h: "mâu thuẫn - sự thôi thúc - nựng/bóp" },
+        { s: 25, e: 35, t: "But you may also feel the [conflicting] [urge] to [squeeze] or [smush] the kitten.", h: "mâu thuẫn - sự thôi thúc - nựng/bóp - ép" },
         { s: 36, e: 40, t: "However, you don’t. And you might be [appalled] by yourself.", h: "kinh hãi, sốc" },
         { s: 40, e: 51, t: "But this urge, which psychologists call “cute aggression,” is a common [phenomenon] [estimated] to [affect] adults.", h: "hiện tượng - ước tính - ảnh hưởng" },
         { s: 52, e: 57, t: "To better understand this [peculiar] case, let's start with what cuteness is.", h: "kỳ lạ, riêng biệt" },
@@ -142,55 +231,81 @@
         { s: 310, e: 327, t: "Cuteness [wields] immense, [consequential] power in our world.", h: "nắm giữ - hệ trọng" }
     ];
 
-    // YT API
-    var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
-    document.getElementsByTagName('head')[0].appendChild(tag);
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
     var player;
     function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', { videoId: 'yxsoE3jO8HM', events: { 'onReady': () => { render(); setInterval(sync, 400); } } });
-    }
-
-    function render() {
-        const list = document.getElementById('list');
-        quiz.forEach((item, i) => {
-            const div = document.createElement('div');
-            div.className = 'sentence'; div.id = 's' + i;
-            let text = item.t.replace(/\[(.*?)\]/g, (m, p1) => 
-                `<span class="input-item"><input type="text" data-ans="${p1}"><span class="key-reveal">KEY: ${p1.toUpperCase()}</span></span>`);
-            div.innerHTML = `${text} <div class="hint-box">Nghĩa: ${item.h}</div>`;
-            list.appendChild(div);
+        player = new YT.Player('player', {
+            videoId: 'yxsoE3jO8HM',
+            events: { 'onReady': onPlayerReady }
         });
     }
 
-    function sync() {
-        let now = player.getCurrentTime();
-        quiz.forEach((item, i) => {
-            if (now >= item.s && now <= item.e) {
-                document.querySelectorAll('.sentence').forEach(s => s.classList.remove('active'));
-                const el = document.getElementById('s' + i);
+    function onPlayerReady() {
+        renderTranscript();
+        setInterval(syncVideo, 400);
+    }
+
+    function renderTranscript() {
+        const list = document.getElementById('transcript-list');
+        transcriptData.forEach((item, i) => {
+            const card = document.createElement('div');
+            card.className = 'sentence-card';
+            card.id = 'sen-' + i;
+            
+            // Thay thế [word] bằng input và tag đáp án
+            let processedText = item.t.replace(/\[(.*?)\]/g, (match, word) => {
+                return `<span class="input-group">
+                            <input type="text" data-answer="${word}">
+                            <span class="key-tag">KEY: ${word.toUpperCase()}</span>
+                        </span>`;
+            });
+
+            card.innerHTML = `${processedText} <div class="hint">Nghĩa: ${item.h}</div>`;
+            list.appendChild(card);
+        });
+    }
+
+    function syncVideo() {
+        let currentTime = player.getCurrentTime();
+        transcriptData.forEach((item, i) => {
+            const el = document.getElementById('sen-' + i);
+            if (currentTime >= item.s && currentTime <= item.e) {
+                document.querySelectorAll('.sentence-card').forEach(c => c.classList.remove('active'));
                 el.classList.add('active');
-                if (item.t.includes('[') && !el.dataset.stopped) { player.pauseVideo(); el.dataset.stopped = true; }
+                
+                // Tự dừng khi gặp chỗ trống chưa làm
+                if (item.t.includes('[') && !el.dataset.viewed) {
+                    player.pauseVideo();
+                    el.dataset.viewed = "true";
+                }
             }
         });
     }
 
-    function gradeWork() {
+    function checkAllAnswers() {
         const inputs = document.querySelectorAll('input');
-        let score = 0;
+        let correctCount = 0;
+        
         inputs.forEach(input => {
-            let user = input.value.trim().toLowerCase();
-            let correct = input.dataset.ans.toLowerCase();
-            let reveal = input.nextElementSibling;
-            if (user === correct) {
-                input.className = 'correct'; reveal.style.display = 'none'; score++;
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswer = input.dataset.answer.toLowerCase();
+            const keyTag = input.nextElementSibling;
+
+            if (userAnswer === correctAnswer) {
+                input.className = 'correct';
+                keyTag.style.display = 'none';
+                correctCount++;
             } else {
-                input.className = 'wrong'; reveal.style.display = 'inline-block';
+                input.className = 'wrong';
+                keyTag.style.display = 'inline-block';
             }
         });
-        const scoreBox = document.getElementById('score-text');
-        scoreBox.style.display = 'block';
-        let percent = Math.round((score / inputs.length) * 100);
-        scoreBox.innerText = `ĐIỂM CỦA BẠN: ${score} / ${inputs.length} (${percent}%)`;
+
+        document.getElementById('final-score').innerText = `SCORE: ${correctCount} / ${inputs.length}`;
     }
 </script>
 </body>

@@ -3,116 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn English with Ms. Thúy</title>
+    <title>Learn English with Ms. Thúy - IELTS Vocabulary</title>
     <style>
         :root {
             --pastel-pink: #ffd1dc;
             --deep-pink: #ffafbd;
             --accent-pink: #ff8fa3;
-            --text-color: #5d5d5d;
+            --text-color: #4a4a4a;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: linear-gradient(135deg, var(--pastel-pink), var(--deep-pink));
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             min-height: 100vh;
         }
 
         header {
             text-align: center;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 15px;
-            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            margin-bottom: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
-        h1 {
-            margin: 0;
-            color: #d84361;
-            font-size: 2.5em;
-            text-shadow: 1px 1px 2px white;
-        }
+        h1 { margin: 0; color: #d84361; font-size: 2.2em; }
 
         .container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            max-width: 1200px;
+            grid-template-columns: 1.2fr 0.8fr; /* Mở rộng cột video */
+            gap: 20px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .video-section {
             position: sticky;
-            top: 20px;
+            top: 10px;
         }
 
         .video-container {
-            border: 8px solid white;
-            border-radius: 20px;
+            position: relative;
+            padding-bottom: 56.25%; /* Tỉ lệ 16:9 */
+            height: 0;
+            border: 10px solid white;
+            border-radius: 25px;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
             background: #000;
         }
 
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
         .transcript-section {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 30px;
-            border-radius: 20px;
-            height: 70vh;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 25px;
+            border-radius: 25px;
+            height: 85vh;
             overflow-y: auto;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             scroll-behavior: smooth;
         }
 
         .sentence {
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            line-height: 1.6;
-            font-size: 1.1em;
-            border-left: 5px solid transparent;
+            padding: 18px;
+            margin: 12px 0;
+            border-radius: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            line-height: 1.8;
+            font-size: 1.05em;
+            border-left: 6px solid transparent;
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .sentence.active {
             background: white;
-            border-left: 5px solid var(--accent-pink);
-            transform: translateX(10px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--accent-pink);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(216, 67, 97, 0.1);
         }
 
         input[type="text"] {
             border: none;
-            border-bottom: 2px solid var(--accent-pink);
-            background: transparent;
-            width: 120px;
+            border-bottom: 2.5px solid var(--accent-pink);
+            background: #fff0f3;
+            width: 130px;
             text-align: center;
             font-weight: bold;
             color: #d84361;
             outline: none;
+            border-radius: 4px 4px 0 0;
+            margin: 0 5px;
         }
 
         .keyword-hint {
-            font-size: 0.8em;
-            color: #888;
             display: block;
+            font-size: 0.85em;
+            color: #d84361;
+            font-style: italic;
             margin-top: 5px;
+            font-weight: 500;
         }
 
-        /* Tùy chỉnh thanh cuộn */
-        .transcript-section::-webkit-scrollbar {
-            width: 8px;
-        }
+        .transcript-section::-webkit-scrollbar { width: 10px; }
         .transcript-section::-webkit-scrollbar-thumb {
             background: var(--accent-pink);
             border-radius: 10px;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .container { grid-template-columns: 1fr; }
             .video-section { position: relative; }
         }
@@ -122,7 +130,7 @@
 
 <header>
     <h1>🌸 Learn English with Ms. Thúy 🌸</h1>
-    <p>Chủ đề: Tại sao chúng ta muốn "nựng" những thứ dễ thương?</p>
+    <p>Bài học: <b>The Science of Cute Aggression</b> (40 Blank Challenge)</p>
 </header>
 
 <div class="container">
@@ -130,33 +138,59 @@
         <div class="video-container">
             <div id="player"></div>
         </div>
-        <div style="margin-top: 20px; text-align: center;">
-            <p><i>Gợi ý: Video sẽ tự động dừng ở những câu có lỗ trống. <br>Hãy điền từ và bấm Play để tiếp tục!</i></p>
+        <div style="margin-top: 15px; background: white; padding: 15px; border-radius: 15px; text-align: center;">
+            <p style="margin: 0; color: #d84361;"><b>HƯỚNG DẪN:</b> Video sẽ tự dừng khi gặp từ vựng. Điền vào chỗ trống và nhấn Play để tiếp tục.</p>
         </div>
     </div>
 
-    <div class="transcript-section" id="transcript-container">
-        </div>
+    <div class="transcript-section" id="transcript-container"></div>
 </div>
 
 <script>
-    // 1. Dữ liệu bài học dựa trên file .srt của bạn
-    // Focus vào các từ vựng Academic/IELTS (đã đục lỗ)
     const transcriptData = [
-        { start: 7, end: 10, text: "Watching a kitten fumbling around," },
-        { start: 10, end: 18, text: "it might feel as if you’ve never <input type='text' data-answer='encountered'> anything so devastatingly adorable.", hint: "Vấp phải/Bắt gặp (IELTS Level)" },
+        { start: 7, end: 10, text: "Watching a kitten <input type='text' data-answer='fumbling'> around,", hint: "lóng ngóng/vụng về" },
+        { start: 10, end: 14, text: "it might feel as if you’ve never <input type='text' data-answer='encountered'> anything", hint: "bắt gặp/chạm trán (IELTS)" },
+        { start: 14, end: 18, text: "so <input type='text' data-answer='devastatingly'> adorable in your <input type='text' data-answer='mortal'> life.", hint: "tột cùng/kinh khủng - trần thế" },
         { start: 19, end: 24, text: "You may want to pet its soft fur and kiss its tiny head." },
-        { start: 25, end: 35, text: "But you may also feel the <input type='text' data-answer='conflicting'> urge to squeeze or smush the kitten.", hint: "Đối lập/Mâu thuẫn" },
-        { start: 36, end: 40, text: "However, you don’t. And you might be <input type='text' data-answer='appalled'> by yourself.", hint: "Kinh hãi/Sốc" },
-        { start: 40, end: 51, text: "But this urge, which psychologists call “cute aggression,” is a common <input type='text' data-answer='phenomenon'>.", hint: "Hiện tượng" },
-        { start: 58, end: 111, text: "In 1943, one scientist identified key <input type='text' data-answer='features'> associated with cuteness.", hint: "Đặc điểm" },
-        { start: 111, end: 119, text: "These characteristics were placed in <input type='text' data-answer='opposition'> with those perceived as less cute.", hint: "Sự đối lập" },
-        { start: 140, end: 144, text: "Photos appear to <input type='text' data-answer='stimulate'> brain regions associated with reward.", hint: "Kích thích" },
-        { start: 220, end: 225, text: "One theory is that cute things simply make us want to <input type='text' data-answer='nurture'> them.", hint: "Nuôi dưỡng/Chăm sóc (IELTS Topic: Family)" },
-        { start: 298, end: 303, text: "Animals appear to have gradually adopted more <input type='text' data-answer='juvenile'> features.", hint: "Vị thành niên/Trẻ con" }
+        { start: 25, end: 31, text: "But you may also feel the <input type='text' data-answer='conflicting'> urge to squeeze", hint: "mâu thuẫn/đối lập" },
+        { start: 31, end: 33, text: "or <input type='text' data-answer='smush'> the kitten,", hint: "nghiền nát/đè bẹp" },
+        { start: 33, end: 35, text: "maybe even stuff it in your mouth." },
+        { start: 36, end: 40, text: "However, you don’t. And you might be <input type='text' data-answer='appalled'> by yourself.", hint: "kinh hãi/sốc" },
+        { start: 40, end: 45, text: "But this <input type='text' data-answer='urge'>, which psychologists call “cute aggression,”", hint: "sự thôi thúc" },
+        { start: 45, end: 51, text: "is a surprisingly common one <input type='text' data-answer='estimated'> to <input type='text' data-answer='affect'> about half of all adults.", hint: "được ước tính - ảnh hưởng" },
+        { start: 52, end: 55, text: "To better understand this <input type='text' data-answer='peculiar'> phenomenon,", hint: "kỳ lạ/riêng biệt" },
+        { start: 55, end: 63, text: "let's start with what cuteness is. In 1943, one scientist created a <input type='text' data-answer='baby schema'>", hint: "lược đồ/mô hình trẻ em" },
+        { start: 63, end: 67, text: "that <input type='text' data-answer='identified'> key <input type='text' data-answer='features'>", hint: "xác định - đặc điểm" },
+        { start: 67, end: 71, text: "<input type='text' data-answer='associated'> with cuteness, like plump cheeks and large eyes.", hint: "liên quan đến" },
+        { start: 71, end: 79, text: "These <input type='text' data-answer='characteristics'> were placed in <input type='text' data-answer='opposition'>", hint: "đặc tính - sự đối lập" },
+        { start: 80, end: 87, text: "with those <input type='text' data-answer='perceived'> as less cute. Decades of study have since <input type='text' data-answer='indicated'>", hint: "được nhận thức - chỉ ra rằng" },
+        { start: 87, end: 91, text: "that this baby schema <input type='text' data-answer='reliably'> tracks with human perception.", hint: "một cách đáng tin cậy" },
+        { start: 92, end: 97, text: "When <input type='text' data-answer='participants'> see images containing more features", hint: "người tham gia (nghiên cứu)" },
+        { start: 98, end: 101, text: "that the baby schema <input type='text' data-answer='pinpoints'> as cute,", hint: "chỉ ra chính xác" },
+        { start: 101, end: 104, text: "they <input type='text' data-answer='tend'> to look at them longer.", hint: "có xu hướng" },
+        { start: 105, end: 108, text: "And the photos appear to <input type='text' data-answer='stimulate'> brain regions", hint: "kích thích" },
+        { start: 108, end: 111, text: "associated with <input type='text' data-answer='emotion'> and reward.", hint: "cảm xúc" },
+        { start: 111, end: 115, text: "Cuteness is also thought to <input type='text' data-answer='influence'> behavior.", hint: "ảnh hưởng (IELTS)" },
+        { start: 115, end: 119, text: "In a 2009 study, participants performed better at tasks <input type='text' data-answer='demanding'> precise movements.", hint: "đòi hỏi/yêu cầu" },
+        { start: 120, end: 127, text: "The results <input type='text' data-answer='indicated'> that people use recycling bins more when they have cute images.", hint: "chỉ ra/cho thấy" },
+        { start: 127, end: 130, text: "The fact that cuteness <input type='text' data-answer='hijacks'> our emotions", hint: "chiếm đoạt/khống chế" },
+        { start: 130, end: 135, text: "is not lost on <input type='text' data-answer='authorities'> and advertisers.", hint: "các nhà chức trách" },
+        { start: 135, end: 140, text: "But why does cuteness have this <input type='text' data-answer='hold'> on us? It's <input type='text' data-answer='impossible'> to know for sure,", hint: "sự ảnh hưởng/kiểm soát - không thể" },
+        { start: 141, end: 145, text: "but one <input type='text' data-answer='theory'> is that cute things simply make us want to <input type='text' data-answer='nurture'> them.", hint: "lý thuyết - nuôi dưỡng" },
+        { start: 146, end: 154, text: "Because human babies are <input type='text' data-answer='relatively'> helpless, evolution <input type='text' data-answer='favored'> infants who were cute.", hint: "tương đối - ưu ái" },
+        { start: 158, end: 165, text: "We're <input type='text' data-answer='tuned'> into similar features in other species.", hint: "trở nên nhạy bén/bắt sóng" },
+        { start: 165, end: 171, text: "In fact, as we <input type='text' data-answer='domesticated'> animals, their appearances changed.", hint: "thuần hóa" },
+        { start: 171, end: 180, text: "Some scientists noted a phenomenon called <input type='text' data-answer='domestication syndrome'>.", hint: "hội chứng thuần hóa" },
+        { start: 181, end: 188, text: "Where animals <input type='text' data-answer='gradually'> adopted more <input type='text' data-answer='juvenile'> features.", hint: "dần dần - vị thành niên/trẻ con" },
+        { start: 189, end: 196, text: "These physical changes are <input type='text' data-answer='regulated'> by the <input type='text' data-answer='neural crest'>.", hint: "điều chỉnh - mào thần kinh" },
+        { start: 220, end: 230, text: "Selecting for friendliness may also select for <input type='text' data-answer='docile'> traits.", hint: "ngoan ngoãn/dễ bảo" },
+        { start: 246, end: 254, text: "Ancient humans selected for <input type='text' data-answer='friendlier'> individuals.", hint: "thân thiện hơn" },
+        { start: 255, end: 265, text: "Which led to physical characteristics that <input type='text' data-answer='distinguish'> us from our cousins.", hint: "phân biệt" },
+        { start: 271, end: 277, text: "Why would anyone want to squeeze cute things? It is not <input type='text' data-answer='linked'> to harm.", hint: "liên kết/liên quan" },
+        { start: 280, end: 289, text: "Instead, it results from <input type='text' data-answer='emotional overload'>. It is the brain's way of <input type='text' data-answer='regulating'> feelings.", hint: "quá tải cảm xúc - điều chỉnh" },
+        { start: 310, end: 327, text: "Cuteness <input type='text' data-answer='wields'> immense, <input type='text' data-answer='consequential'> power.", hint: "nắm giữ - mang tính hệ trọng/kết quả" }
     ];
 
-    // 2. YouTube IFrame API
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -165,72 +199,58 @@
     var player;
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-            height: '315',
-            width: '100%',
             videoId: 'yxsoE3jO8HM',
-            events: {
-                'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange
-            }
+            playerVars: { 'autoplay': 0, 'rel': 0, 'modestbranding': 1 },
+            events: { 'onReady': onPlayerReady }
         });
     }
 
-    function onPlayerReady(event) {
+    function onPlayerReady() {
         renderTranscript();
-        setInterval(updateHighlight, 500);
+        setInterval(updateHighlight, 400);
     }
 
-    function onPlayerStateChange(event) {
-        // Có thể thêm logic xử lý khi video dừng/phát ở đây
-    }
-
-    // 3. Hiển thị Transcript
     function renderTranscript() {
         const container = document.getElementById('transcript-container');
         transcriptData.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = 'sentence';
             div.id = `s-${index}`;
-            div.innerHTML = `
-                ${item.text}
-                ${item.hint ? `<span class="keyword-hint">(${item.hint})</span>` : ''}
-            `;
+            // Thay thế input hint để hiển thị bên dưới ô trống
+            let htmlText = item.text.replace(/<input/g, (match) => {
+                return `<br><input`;
+            });
+            div.innerHTML = `${item.text} ${item.hint ? `<span class="keyword-hint">→ Nghĩa: ${item.hint}</span>` : ''}`;
             container.appendChild(div);
         });
     }
 
-    // 4. Logic Highlight và Tự động dừng (Pause)
     let lastActiveIndex = -1;
-    let pausedIndices = new Set(); // Để tránh dừng liên tục 1 chỗ
+    let pausedIndices = new Set();
 
     function updateHighlight() {
+        if (!player || typeof player.getCurrentTime !== 'function') return;
         const currentTime = player.getCurrentTime();
         
         transcriptData.forEach((item, index) => {
             if (currentTime >= item.start && currentTime <= item.end) {
                 if (lastActiveIndex !== index) {
-                    // Xóa class active cũ
                     document.querySelectorAll('.sentence').forEach(s => s.classList.remove('active'));
-                    
-                    // Thêm class active mới
                     const currentEl = document.getElementById(`s-${index}`);
-                    currentEl.classList.add('active');
-                    
-                    // Cuộn lên trên
-                    currentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    if (currentEl) {
+                        currentEl.classList.add('active');
+                        currentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
 
-                    // Nếu câu có input và chưa bị dừng lần nào, thì tạm dừng video
                     if (item.text.includes('input') && !pausedIndices.has(index)) {
                         player.pauseVideo();
                         pausedIndices.add(index);
                     }
-                    
                     lastActiveIndex = index;
                 }
             }
         });
     }
 </script>
-
 </body>
 </html>

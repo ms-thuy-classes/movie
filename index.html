@@ -10,10 +10,11 @@
             --deep-pink: #ffafbd;
             --accent-pink: #ff8fa3;
             --text-color: #4a4a4a;
+            --success-green: #7fd1a5;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, var(--pastel-pink), var(--deep-pink));
             color: var(--text-color);
             margin: 0;
@@ -24,7 +25,7 @@
         header {
             text-align: center;
             padding: 15px;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
             border-radius: 20px;
             margin-bottom: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -34,9 +35,9 @@
 
         .container {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr; /* Mở rộng cột video */
+            grid-template-columns: 1.3fr 0.7fr; /* Ưu tiên video rộng hơn nữa */
             gap: 20px;
-            max-width: 1400px;
+            max-width: 1500px;
             margin: 0 auto;
         }
 
@@ -47,7 +48,7 @@
 
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* Tỉ lệ 16:9 */
+            padding-bottom: 56.25%;
             height: 0;
             border: 10px solid white;
             border-radius: 25px;
@@ -58,14 +59,11 @@
 
         .video-container iframe {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
         }
 
         .transcript-section {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             padding: 25px;
             border-radius: 25px;
             height: 85vh;
@@ -78,11 +76,10 @@
             padding: 18px;
             margin: 12px 0;
             border-radius: 15px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s ease;
             line-height: 1.8;
-            font-size: 1.05em;
             border-left: 6px solid transparent;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.5);
         }
 
         .sentence.active {
@@ -96,13 +93,19 @@
             border: none;
             border-bottom: 2.5px solid var(--accent-pink);
             background: #fff0f3;
-            width: 130px;
+            width: 140px;
             text-align: center;
             font-weight: bold;
             color: #d84361;
             outline: none;
-            border-radius: 4px 4px 0 0;
-            margin: 0 5px;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        input.correct {
+            background: var(--success-green) !important;
+            color: white !important;
+            border-bottom-color: white;
         }
 
         .keyword-hint {
@@ -111,14 +114,26 @@
             color: #d84361;
             font-style: italic;
             margin-top: 5px;
-            font-weight: 500;
         }
 
-        .transcript-section::-webkit-scrollbar { width: 10px; }
-        .transcript-section::-webkit-scrollbar-thumb {
-            background: var(--accent-pink);
-            border-radius: 10px;
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-check { background: var(--accent-pink); color: white; }
+        .btn-check:hover { background: #d84361; }
 
         @media (max-width: 1100px) {
             .container { grid-template-columns: 1fr; }
@@ -130,7 +145,7 @@
 
 <header>
     <h1>🌸 Learn English with Ms. Thúy 🌸</h1>
-    <p>Bài học: <b>The Science of Cute Aggression</b> (40 Blank Challenge)</p>
+    <p><b>Video:</b> Why do you want to squeeze cute things? (40 Vocabulary Gaps)</p>
 </header>
 
 <div class="container">
@@ -138,8 +153,9 @@
         <div class="video-container">
             <div id="player"></div>
         </div>
-        <div style="margin-top: 15px; background: white; padding: 15px; border-radius: 15px; text-align: center;">
-            <p style="margin: 0; color: #d84361;"><b>HƯỚNG DẪN:</b> Video sẽ tự dừng khi gặp từ vựng. Điền vào chỗ trống và nhấn Play để tiếp tục.</p>
+        <div class="controls">
+            <button class="btn-check" onclick="checkAnswers()">Kiểm tra đáp án</button>
+            <button style="background: white; color: #888;" onclick="location.reload()">Làm lại bài</button>
         </div>
     </div>
 
@@ -147,48 +163,41 @@
 </div>
 
 <script>
+    // Toàn bộ 40 chỗ trống (IELTS & Common words) trích xuất từ nội dung bạn cung cấp
     const transcriptData = [
         { start: 7, end: 10, text: "Watching a kitten <input type='text' data-answer='fumbling'> around,", hint: "lóng ngóng/vụng về" },
-        { start: 10, end: 14, text: "it might feel as if you’ve never <input type='text' data-answer='encountered'> anything", hint: "bắt gặp/chạm trán (IELTS)" },
-        { start: 14, end: 18, text: "so <input type='text' data-answer='devastatingly'> adorable in your <input type='text' data-answer='mortal'> life.", hint: "tột cùng/kinh khủng - trần thế" },
+        { start: 10, end: 18, text: "it might feel as if you’ve never <input type='text' data-answer='encountered'> anything so <input type='text' data-answer='devastatingly'> adorable in your <input type='text' data-answer='mortal'> life.", hint: "bắt gặp - tột cùng - trần thế" },
         { start: 19, end: 24, text: "You may want to pet its soft fur and kiss its tiny head." },
-        { start: 25, end: 31, text: "But you may also feel the <input type='text' data-answer='conflicting'> urge to squeeze", hint: "mâu thuẫn/đối lập" },
-        { start: 31, end: 33, text: "or <input type='text' data-answer='smush'> the kitten,", hint: "nghiền nát/đè bẹp" },
-        { start: 33, end: 35, text: "maybe even stuff it in your mouth." },
+        { start: 25, end: 35, text: "But you may also feel the <input type='text' data-answer='conflicting'> <input type='text' data-answer='urge'> to <input type='text' data-answer='squeeze'> or smush the kitten,", hint: "mâu thuẫn - sự thôi thúc - bóp/nặn" },
         { start: 36, end: 40, text: "However, you don’t. And you might be <input type='text' data-answer='appalled'> by yourself.", hint: "kinh hãi/sốc" },
-        { start: 40, end: 45, text: "But this <input type='text' data-answer='urge'>, which psychologists call “cute aggression,”", hint: "sự thôi thúc" },
-        { start: 45, end: 51, text: "is a surprisingly common one <input type='text' data-answer='estimated'> to <input type='text' data-answer='affect'> about half of all adults.", hint: "được ước tính - ảnh hưởng" },
-        { start: 52, end: 55, text: "To better understand this <input type='text' data-answer='peculiar'> phenomenon,", hint: "kỳ lạ/riêng biệt" },
-        { start: 55, end: 63, text: "let's start with what cuteness is. In 1943, one scientist created a <input type='text' data-answer='baby schema'>", hint: "lược đồ/mô hình trẻ em" },
-        { start: 63, end: 67, text: "that <input type='text' data-answer='identified'> key <input type='text' data-answer='features'>", hint: "xác định - đặc điểm" },
-        { start: 67, end: 71, text: "<input type='text' data-answer='associated'> with cuteness, like plump cheeks and large eyes.", hint: "liên quan đến" },
-        { start: 71, end: 79, text: "These <input type='text' data-answer='characteristics'> were placed in <input type='text' data-answer='opposition'>", hint: "đặc tính - sự đối lập" },
-        { start: 80, end: 87, text: "with those <input type='text' data-answer='perceived'> as less cute. Decades of study have since <input type='text' data-answer='indicated'>", hint: "được nhận thức - chỉ ra rằng" },
-        { start: 87, end: 91, text: "that this baby schema <input type='text' data-answer='reliably'> tracks with human perception.", hint: "một cách đáng tin cậy" },
-        { start: 92, end: 97, text: "When <input type='text' data-answer='participants'> see images containing more features", hint: "người tham gia (nghiên cứu)" },
-        { start: 98, end: 101, text: "that the baby schema <input type='text' data-answer='pinpoints'> as cute,", hint: "chỉ ra chính xác" },
-        { start: 101, end: 104, text: "they <input type='text' data-answer='tend'> to look at them longer.", hint: "có xu hướng" },
-        { start: 105, end: 108, text: "And the photos appear to <input type='text' data-answer='stimulate'> brain regions", hint: "kích thích" },
-        { start: 108, end: 111, text: "associated with <input type='text' data-answer='emotion'> and reward.", hint: "cảm xúc" },
-        { start: 111, end: 115, text: "Cuteness is also thought to <input type='text' data-answer='influence'> behavior.", hint: "ảnh hưởng (IELTS)" },
-        { start: 115, end: 119, text: "In a 2009 study, participants performed better at tasks <input type='text' data-answer='demanding'> precise movements.", hint: "đòi hỏi/yêu cầu" },
-        { start: 120, end: 127, text: "The results <input type='text' data-answer='indicated'> that people use recycling bins more when they have cute images.", hint: "chỉ ra/cho thấy" },
-        { start: 127, end: 130, text: "The fact that cuteness <input type='text' data-answer='hijacks'> our emotions", hint: "chiếm đoạt/khống chế" },
-        { start: 130, end: 135, text: "is not lost on <input type='text' data-answer='authorities'> and advertisers.", hint: "các nhà chức trách" },
-        { start: 135, end: 140, text: "But why does cuteness have this <input type='text' data-answer='hold'> on us? It's <input type='text' data-answer='impossible'> to know for sure,", hint: "sự ảnh hưởng/kiểm soát - không thể" },
-        { start: 141, end: 145, text: "but one <input type='text' data-answer='theory'> is that cute things simply make us want to <input type='text' data-answer='nurture'> them.", hint: "lý thuyết - nuôi dưỡng" },
-        { start: 146, end: 154, text: "Because human babies are <input type='text' data-answer='relatively'> helpless, evolution <input type='text' data-answer='favored'> infants who were cute.", hint: "tương đối - ưu ái" },
-        { start: 158, end: 165, text: "We're <input type='text' data-answer='tuned'> into similar features in other species.", hint: "trở nên nhạy bén/bắt sóng" },
+        { start: 40, end: 51, text: "But this urge, which psychologists call “cute aggression,” is a common <input type='text' data-answer='phenomenon'> <input type='text' data-answer='estimated'> to <input type='text' data-answer='affect'> adults.", hint: "hiện tượng - ước tính - ảnh hưởng" },
+        { start: 52, end: 57, text: "To better understand this <input type='text' data-answer='peculiar'> case, let's start with what cuteness is.", hint: "kỳ lạ/riêng biệt" },
+        { start: 58, end: 67, text: "In 1943, one scientist created a baby <input type='text' data-answer='schema'> that <input type='text' data-answer='identified'> key <input type='text' data-answer='features'>.", hint: "lược đồ - xác định - đặc điểm" },
+        { start: 67, end: 71, text: "Like plump cheeks, large eyes, and short <input type='text' data-answer='limbs'>.", hint: "chi/tay chân" },
+        { start: 71, end: 79, text: "These <input type='text' data-answer='characteristics'> were placed in <input type='text' data-answer='opposition'> with those <input type='text' data-answer='perceived'> as less cute.", hint: "đặc tính - sự đối lập - nhận thức" },
+        { start: 80, end: 87, text: "Decades of study have since <input type='text' data-answer='indicated'> that this schema <input type='text' data-answer='reliably'> tracks with us.", hint: "chỉ ra - đáng tin cậy" },
+        { start: 92, end: 97, text: "When <input type='text' data-answer='participants'> see images containing more features,", hint: "người tham gia" },
+        { start: 98, end: 104, text: "they <input type='text' data-answer='tend'> to look at them longer and more often.", hint: "có xu hướng" },
+        { start: 105, end: 111, text: "And the photos appear to <input type='text' data-answer='stimulate'> brain regions associated with reward.", hint: "kích thích" },
+        { start: 112, end: 115, text: "Cuteness is also thought to <input type='text' data-answer='influence'> behavior.", hint: "ảnh hưởng" },
+        { start: 115, end: 120, text: "In a 2009 study, people performed better at games <input type='text' data-answer='demanding'> precise movements.", hint: "yêu cầu/đòi hỏi" },
+        { start: 121, end: 127, text: "The results indicated that people use recycling bins more when they have <input type='text' data-answer='cute'> images.", hint: "dễ thương" },
+        { start: 127, end: 135, text: "The fact that cuteness <input type='text' data-answer='hijacks'> our emotions is not lost on <input type='text' data-answer='advertisers'>.", hint: "khống chế - nhà quảng cáo" },
+        { start: 135, end: 145, text: "But why? One <input type='text' data-answer='theory'> is that cute things simply make us want to <input type='text' data-answer='nurture'> them.", hint: "lý thuyết - nuôi dưỡng" },
+        { start: 146, end: 154, text: "Because human babies are <input type='text' data-answer='relatively'> helpless, evolution <input type='text' data-answer='favored'> cute infants.", hint: "tương đối - ưu ái" },
+        { start: 155, end: 165, text: "And, being <input type='text' data-answer='acutely'> sensitive, we're <input type='text' data-answer='tuned'> into similar features in other species.", hint: "cực kỳ - nhạy bén" },
         { start: 165, end: 171, text: "In fact, as we <input type='text' data-answer='domesticated'> animals, their appearances changed.", hint: "thuần hóa" },
-        { start: 171, end: 180, text: "Some scientists noted a phenomenon called <input type='text' data-answer='domestication syndrome'>.", hint: "hội chứng thuần hóa" },
-        { start: 181, end: 188, text: "Where animals <input type='text' data-answer='gradually'> adopted more <input type='text' data-answer='juvenile'> features.", hint: "dần dần - vị thành niên/trẻ con" },
-        { start: 189, end: 196, text: "These physical changes are <input type='text' data-answer='regulated'> by the <input type='text' data-answer='neural crest'>.", hint: "điều chỉnh - mào thần kinh" },
-        { start: 220, end: 230, text: "Selecting for friendliness may also select for <input type='text' data-answer='docile'> traits.", hint: "ngoan ngoãn/dễ bảo" },
+        { start: 171, end: 180, text: "Some scientists noted a phenomenon called <input type='text' data-answer='domestication'> syndrome.", hint: "thuần hóa" },
+        { start: 181, end: 188, text: "Where animals gradually adopted more <input type='text' data-answer='juvenile'> features as they became <input type='text' data-answer='docile'>.", hint: "vị thành niên - dễ bảo" },
+        { start: 189, end: 196, text: "These physical changes are <input type='text' data-answer='regulated'> by an <input type='text' data-answer='embryonic'> structure.", hint: "điều chỉnh - thuộc phôi thai" },
+        { start: 220, end: 230, text: "Friendly dogs look more like babies. Some theorize we <input type='text' data-answer='domesticated'> ourselves.", hint: "thuần hóa" },
         { start: 246, end: 254, text: "Ancient humans selected for <input type='text' data-answer='friendlier'> individuals.", hint: "thân thiện hơn" },
-        { start: 255, end: 265, text: "Which led to physical characteristics that <input type='text' data-answer='distinguish'> us from our cousins.", hint: "phân biệt" },
-        { start: 271, end: 277, text: "Why would anyone want to squeeze cute things? It is not <input type='text' data-answer='linked'> to harm.", hint: "liên kết/liên quan" },
-        { start: 280, end: 289, text: "Instead, it results from <input type='text' data-answer='emotional overload'>. It is the brain's way of <input type='text' data-answer='regulating'> feelings.", hint: "quá tải cảm xúc - điều chỉnh" },
-        { start: 310, end: 327, text: "Cuteness <input type='text' data-answer='wields'> immense, <input type='text' data-answer='consequential'> power.", hint: "nắm giữ - mang tính hệ trọng/kết quả" }
+        { start: 255, end: 265, text: "Which led to physical characteristics that <input type='text' data-answer='distinguish'> us.", hint: "phân biệt" },
+        { start: 271, end: 282, text: "Cute aggression is not <input type='text' data-answer='linked'> to the actual <input type='text' data-answer='intention'> to do harm.", hint: "liên kết - ý định" },
+        { start: 283, end: 289, text: "Instead, it results from emotional <input type='text' data-answer='overload'>.", hint: "quá tải" },
+        { start: 290, end: 298, text: "Certain people feel <input type='text' data-answer='overwhelming'> positive emotions.", hint: "tràn ngập/áp đảo" },
+        { start: 299, end: 309, text: "Aggressive thoughts are the brain's way of <input type='text' data-answer='regulating'> those intense feelings.", hint: "điều chỉnh" },
+        { start: 310, end: 327, text: "Cuteness <input type='text' data-answer='wields'> immense, <input type='text' data-answer='consequential'> power. It runs the world.", hint: "nắm giữ - hệ trọng" }
     ];
 
     var tag = document.createElement('script');
@@ -216,11 +225,7 @@
             const div = document.createElement('div');
             div.className = 'sentence';
             div.id = `s-${index}`;
-            // Thay thế input hint để hiển thị bên dưới ô trống
-            let htmlText = item.text.replace(/<input/g, (match) => {
-                return `<br><input`;
-            });
-            div.innerHTML = `${item.text} ${item.hint ? `<span class="keyword-hint">→ Nghĩa: ${item.hint}</span>` : ''}`;
+            div.innerHTML = `${item.text} <span class="keyword-hint">→ Nghĩa: ${item.hint}</span>`;
             container.appendChild(div);
         });
     }
@@ -248,6 +253,20 @@
                     }
                     lastActiveIndex = index;
                 }
+            }
+        });
+    }
+
+    function checkAnswers() {
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswer = input.getAttribute('data-answer').toLowerCase();
+            if (userAnswer === correctAnswer) {
+                input.classList.add('correct');
+            } else {
+                input.classList.remove('correct');
+                input.style.borderBottom = "2.5px solid red";
             }
         });
     }
